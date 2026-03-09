@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - Auth
+  version: 1.0.0
+  description: Endpoints de autenticacion.
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login y generacion de JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              jesus:
+                value:
+                  nombre: Jesus
+                  password: passJesus123
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Request invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - nombre
+        - password
+      properties:
+        nombre:
+          type: string
+          example: Jesus
+        password:
+          type: string
+          example: passJesus123
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nombre:
+              type: string
+              example: Jesus
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Credenciales invalidas

@@ -10,7 +10,9 @@ paths:
       tags:
         - Users
       summary: Listar usuarios
-      description: Ejemplo de archivo modular para endpoints de usuarios.
+      security:
+        - bearerAuth: []
+      description: Devuelve usuarios sin incluir password.
       responses:
         '200':
           description: Lista de usuarios obtenida correctamente
@@ -20,6 +22,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -35,3 +43,9 @@ components:
         telefono:
           type: string
           example: '+34123456789'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Token no proporcionado

@@ -23,7 +23,17 @@ const options: Options = {
         description: "Backend URL definida por entorno",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
     tags: [
+      { name: "Auth", description: "Autenticacion con JWT" },
       { name: "Citas", description: "Operaciones del modulo de citas" },
       { name: "Peliculas", description: "Catalogo de peliculas para swiping" },
       { name: "Comidas", description: "Catalogo de comidas para swiping" },

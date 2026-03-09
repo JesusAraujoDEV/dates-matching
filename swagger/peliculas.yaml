@@ -9,6 +9,8 @@ paths:
     get:
       tags:
         - Peliculas
+      security:
+        - bearerAuth: []
       summary: Listar peliculas del catalogo
       responses:
         '200':
@@ -22,6 +24,8 @@ paths:
     post:
       tags:
         - Peliculas
+      security:
+        - bearerAuth: []
       summary: Crear pelicula en catalogo
       requestBody:
         required: true
@@ -47,6 +51,8 @@ paths:
     get:
       tags:
         - Peliculas
+      security:
+        - bearerAuth: []
       summary: Obtener pelicula por id
       parameters:
         - in: path
@@ -66,6 +72,8 @@ paths:
     put:
       tags:
         - Peliculas
+      security:
+        - bearerAuth: []
       summary: Actualizar pelicula del catalogo
       parameters:
         - in: path
@@ -89,6 +97,8 @@ paths:
     delete:
       tags:
         - Peliculas
+      security:
+        - bearerAuth: []
       summary: Eliminar pelicula del catalogo
       parameters:
         - in: path
