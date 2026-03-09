@@ -10,6 +10,10 @@ const citaController = new CitaController(citaService);
 
 const citaRouter = Router();
 
+citaRouter.get("/", citaController.findAll);
+citaRouter.get("/:id", citaController.findById);
+citaRouter.post("/", citaController.create);
+citaRouter.put("/:id", citaController.updateResultadoManual);
 citaRouter.post("/:id/voto", citaController.emitirVotoFinal);
 
 export { citaRouter };

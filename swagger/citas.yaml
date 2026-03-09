@@ -5,6 +5,122 @@ info:
   description: Endpoints del modulo de citas.
 
 paths:
+  /api/citas:
+    get:
+      tags:
+        - Citas
+      summary: Listar historial de citas
+      responses:
+        '200':
+          description: Historial de citas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cita'
+    post:
+      tags:
+        - Citas
+      summary: Iniciar una nueva cita
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCitaRequest'
+            examples:
+              nuevaCita:
+                value:
+                  fecha: 2026-03-15T21:00:00.000Z
+                  tipo_cita: noche_de_pelicula
+                  peliculas_match:
+                    - Inception
+                    - Interstellar
+                  comidas_match:
+                    - Sushi
+                    - Tequenos
+      responses:
+        '201':
+          description: Cita creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cita'
+        '400':
+          description: Request invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/citas/{id}:
+    get:
+      tags:
+        - Citas
+      summary: Obtener detalle de una cita
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Detalle de la cita
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cita'
+        '404':
+          description: Cita no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - Citas
+      summary: Edicion manual de resultados finales (admin)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateResultadoCitaRequest'
+            examples:
+              cambioManual:
+                value:
+                  resultado_pelicula: Interstellar
+                  resultado_comida: Tequenos
+      responses:
+        '200':
+          description: Cita actualizada manualmente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cita'
+        '400':
+          description: Request invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cita no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /api/citas/{id}/voto:
     post:
       tags:
@@ -29,13 +145,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/EmitirVotoFinalRequest'
-            examples:
-              votoJesus:
-                summary: Voto emitido por Jesus
-                value:
-                  usuarioId: 1
-                  pelicula: Inception
-                  comida: Sushi
       responses:
         '200':
           description: Voto registrado o cita finalizada con resultado calculado
@@ -49,10 +158,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-              examples:
-                badRequest:
-                  value:
-                    error: Debes enviar usuarioId, pelicula y comida en el body
         '403':
           description: Usuario no autorizado para votar
           content:
@@ -71,15 +176,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Error interno del servidor
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
+    CreateCitaRequest:
+      type: object
+      required:
+        - fecha
+        - tipo_cita
+        - peliculas_match
+        - comidas_match
+      properties:
+        fecha:
+          type: string
+          format: date-time
+        tipo_cita:
+          type: string
+          example: noche_de_pelicula
+        peliculas_match:
+          type: array
+          items:
+            type: string
+          example: [Inception, Interstellar]
+        comidas_match:
+          type: array
+          items:
+            type: string
+          example: [Sushi, Tequenos]
+
+    UpdateResultadoCitaRequest:
+      type: object
+      properties:
+        resultado_pelicula:
+          type: string
+          nullable: true
+          example: Interstellar
+        resultado_comida:
+          type: string
+          nullable: true
+          example: Tequenos
+
     EmitirVotoFinalRequest:
       type: object
       required:
@@ -89,15 +225,12 @@ components:
       properties:
         usuarioId:
           type: integer
-          description: ID del usuario que emite el voto final
           example: 1
         pelicula:
           type: string
-          description: Pelicula elegida por el usuario
           example: Inception
         comida:
           type: string
-          description: Comida elegida por el usuario
           example: Sushi
 
     EmitirVotoFinalResponse:
@@ -139,27 +272,21 @@ components:
         voto_jesus_pelicula:
           type: string
           nullable: true
-          example: Inception
         voto_jesus_comida:
           type: string
           nullable: true
-          example: Sushi
         voto_piera_pelicula:
           type: string
           nullable: true
-          example: Interstellar
         voto_piera_comida:
           type: string
           nullable: true
-          example: Pizza
         resultado_pelicula:
           type: string
           nullable: true
-          example: Inception
         resultado_comida:
           type: string
           nullable: true
-          example: Sushi
         createdAt:
           type: string
           format: date-time

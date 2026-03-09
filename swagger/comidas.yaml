@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - Comidas
+  version: 1.0.0
+  description: CRUD del catalogo de comidas para el swiping.
+
+paths:
+  /api/comidas:
+    get:
+      tags:
+        - Comidas
+      summary: Listar comidas del catalogo
+      responses:
+        '200':
+          description: Lista de comidas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogoComida'
+    post:
+      tags:
+        - Comidas
+      summary: Crear comida en catalogo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCatalogoComidaRequest'
+            examples:
+              hamburguesas:
+                value:
+                  nombre: Hamburguesas de la calle del hambre
+                  descripcion: Hamburguesa doble con papas y salsa especial.
+                  imagen_url: https://images.example.com/hamburguesa.jpg
+              tequenos:
+                value:
+                  nombre: Tequenos
+                  descripcion: Dedos de queso crujientes para compartir.
+      responses:
+        '201':
+          description: Comida creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoComida'
+
+  /api/comidas/{id}:
+    get:
+      tags:
+        - Comidas
+      summary: Obtener comida por id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comida encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoComida'
+        '404':
+          description: Comida no encontrada
+    put:
+      tags:
+        - Comidas
+      summary: Actualizar comida del catalogo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCatalogoComidaRequest'
+      responses:
+        '200':
+          description: Comida actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoComida'
+    delete:
+      tags:
+        - Comidas
+      summary: Eliminar comida del catalogo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Comida eliminada
+
+components:
+  schemas:
+    CatalogoComida:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+          example: Tequenos
+        descripcion:
+          type: string
+          example: Dedos de queso crujientes para compartir.
+        imagen_url:
+          type: string
+          nullable: true
+          example: https://images.example.com/tequenos.jpg
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateCatalogoComidaRequest:
+      type: object
+      required:
+        - nombre
+        - descripcion
+      properties:
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        imagen_url:
+          type: string
+
+    UpdateCatalogoComidaRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+        descripcion:
+          type: string
+        imagen_url:
+          type: string
+          nullable: true

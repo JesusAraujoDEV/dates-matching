@@ -385,7 +385,9 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Cita: 'Cita'
+  Cita: 'Cita',
+  CatalogoPelicula: 'CatalogoPelicula',
+  CatalogoComida: 'CatalogoComida'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -401,7 +403,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "cita"
+    modelProps: "user" | "cita" | "catalogoPelicula" | "catalogoComida"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,6 +555,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CatalogoPelicula: {
+      payload: Prisma.$CatalogoPeliculaPayload<ExtArgs>
+      fields: Prisma.CatalogoPeliculaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CatalogoPeliculaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CatalogoPeliculaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        findFirst: {
+          args: Prisma.CatalogoPeliculaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CatalogoPeliculaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        findMany: {
+          args: Prisma.CatalogoPeliculaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>[]
+        }
+        create: {
+          args: Prisma.CatalogoPeliculaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        createMany: {
+          args: Prisma.CatalogoPeliculaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CatalogoPeliculaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>[]
+        }
+        delete: {
+          args: Prisma.CatalogoPeliculaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        update: {
+          args: Prisma.CatalogoPeliculaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        deleteMany: {
+          args: Prisma.CatalogoPeliculaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CatalogoPeliculaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CatalogoPeliculaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>[]
+        }
+        upsert: {
+          args: Prisma.CatalogoPeliculaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoPeliculaPayload>
+        }
+        aggregate: {
+          args: Prisma.CatalogoPeliculaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCatalogoPelicula>
+        }
+        groupBy: {
+          args: Prisma.CatalogoPeliculaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogoPeliculaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CatalogoPeliculaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogoPeliculaCountAggregateOutputType> | number
+        }
+      }
+    }
+    CatalogoComida: {
+      payload: Prisma.$CatalogoComidaPayload<ExtArgs>
+      fields: Prisma.CatalogoComidaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CatalogoComidaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CatalogoComidaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        findFirst: {
+          args: Prisma.CatalogoComidaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CatalogoComidaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        findMany: {
+          args: Prisma.CatalogoComidaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>[]
+        }
+        create: {
+          args: Prisma.CatalogoComidaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        createMany: {
+          args: Prisma.CatalogoComidaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CatalogoComidaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>[]
+        }
+        delete: {
+          args: Prisma.CatalogoComidaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        update: {
+          args: Prisma.CatalogoComidaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        deleteMany: {
+          args: Prisma.CatalogoComidaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CatalogoComidaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CatalogoComidaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>[]
+        }
+        upsert: {
+          args: Prisma.CatalogoComidaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CatalogoComidaPayload>
+        }
+        aggregate: {
+          args: Prisma.CatalogoComidaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCatalogoComida>
+        }
+        groupBy: {
+          args: Prisma.CatalogoComidaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogoComidaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CatalogoComidaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CatalogoComidaCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -619,6 +769,28 @@ export const CitaScalarFieldEnum = {
 } as const
 
 export type CitaScalarFieldEnum = (typeof CitaScalarFieldEnum)[keyof typeof CitaScalarFieldEnum]
+
+
+export const CatalogoPeliculaScalarFieldEnum = {
+  id: 'id',
+  titulo: 'titulo',
+  tmdb_id: 'tmdb_id',
+  poster_url: 'poster_url',
+  createdAt: 'createdAt'
+} as const
+
+export type CatalogoPeliculaScalarFieldEnum = (typeof CatalogoPeliculaScalarFieldEnum)[keyof typeof CatalogoPeliculaScalarFieldEnum]
+
+
+export const CatalogoComidaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  imagen_url: 'imagen_url',
+  createdAt: 'createdAt'
+} as const
+
+export type CatalogoComidaScalarFieldEnum = (typeof CatalogoComidaScalarFieldEnum)[keyof typeof CatalogoComidaScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -847,6 +1019,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   cita?: Prisma.CitaOmit
+  catalogoPelicula?: Prisma.CatalogoPeliculaOmit
+  catalogoComida?: Prisma.CatalogoComidaOmit
 }
 
 /* Types for Logging */

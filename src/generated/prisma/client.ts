@@ -49,3 +49,13 @@ export type User = Prisma.UserModel
  * 
  */
 export type Cita = Prisma.CitaModel
+/**
+ * Model CatalogoPelicula
+ * 
+ */
+export type CatalogoPelicula = Prisma.CatalogoPeliculaModel
+/**
+ * Model CatalogoComida
+ * 
+ */
+export type CatalogoComida = Prisma.CatalogoComidaModel

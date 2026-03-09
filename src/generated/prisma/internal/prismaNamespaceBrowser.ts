@@ -52,7 +52,9 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
-  Cita: 'Cita'
+  Cita: 'Cita',
+  CatalogoPelicula: 'CatalogoPelicula',
+  CatalogoComida: 'CatalogoComida'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -98,6 +100,28 @@ export const CitaScalarFieldEnum = {
 } as const
 
 export type CitaScalarFieldEnum = (typeof CitaScalarFieldEnum)[keyof typeof CitaScalarFieldEnum]
+
+
+export const CatalogoPeliculaScalarFieldEnum = {
+  id: 'id',
+  titulo: 'titulo',
+  tmdb_id: 'tmdb_id',
+  poster_url: 'poster_url',
+  createdAt: 'createdAt'
+} as const
+
+export type CatalogoPeliculaScalarFieldEnum = (typeof CatalogoPeliculaScalarFieldEnum)[keyof typeof CatalogoPeliculaScalarFieldEnum]
+
+
+export const CatalogoComidaScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  descripcion: 'descripcion',
+  imagen_url: 'imagen_url',
+  createdAt: 'createdAt'
+} as const
+
+export type CatalogoComidaScalarFieldEnum = (typeof CatalogoComidaScalarFieldEnum)[keyof typeof CatalogoComidaScalarFieldEnum]
 
 
 export const SortOrder = {

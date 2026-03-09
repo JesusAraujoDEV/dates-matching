@@ -19,3 +19,28 @@ export interface EmitirVotoFinalResponse {
   message: string;
   cita: Cita;
 }
+
+export interface CreateCitaBody {
+  fecha: string;
+  tipo_cita: string;
+  peliculas_match: string[];
+  comidas_match: string[];
+}
+
+export interface UpdateCitaBody {
+  resultado_pelicula?: string | null;
+  resultado_comida?: string | null;
+}
+
+export interface CreateCitaParams {
+  fecha: string;
+  tipo_cita: string;
+  peliculas_match: string[];
+  comidas_match: string[];
+}
+
+export interface UpdateCitaParams {
+  id: number;
+  resultado_pelicula?: string | null;
+  resultado_comida?: string | null;
+}

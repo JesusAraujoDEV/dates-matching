@@ -25,6 +25,8 @@ const options: Options = {
     ],
     tags: [
       { name: "Citas", description: "Operaciones del modulo de citas" },
+      { name: "Peliculas", description: "Catalogo de peliculas para swiping" },
+      { name: "Comidas", description: "Catalogo de comidas para swiping" },
       { name: "Users", description: "Operaciones del modulo de usuarios" },
     ],
   },

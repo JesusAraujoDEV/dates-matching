@@ -10,4 +10,6 @@
  */
 export type * from './models/User'
 export type * from './models/Cita'
+export type * from './models/CatalogoPelicula'
+export type * from './models/CatalogoComida'
 export type * from './commonInputTypes'

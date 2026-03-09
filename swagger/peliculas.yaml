@@ -1,0 +1,146 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - Peliculas
+  version: 1.0.0
+  description: CRUD del catalogo de peliculas para el swiping.
+
+paths:
+  /api/peliculas:
+    get:
+      tags:
+        - Peliculas
+      summary: Listar peliculas del catalogo
+      responses:
+        '200':
+          description: Lista de peliculas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CatalogoPelicula'
+    post:
+      tags:
+        - Peliculas
+      summary: Crear pelicula en catalogo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCatalogoPeliculaRequest'
+            examples:
+              ejemplo:
+                value:
+                  titulo: Inception
+                  tmdb_id: '27205'
+                  poster_url: https://image.tmdb.org/t/p/w500/inception.jpg
+      responses:
+        '201':
+          description: Pelicula creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoPelicula'
+
+  /api/peliculas/{id}:
+    get:
+      tags:
+        - Peliculas
+      summary: Obtener pelicula por id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pelicula encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoPelicula'
+        '404':
+          description: Pelicula no encontrada
+    put:
+      tags:
+        - Peliculas
+      summary: Actualizar pelicula del catalogo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCatalogoPeliculaRequest'
+      responses:
+        '200':
+          description: Pelicula actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoPelicula'
+    delete:
+      tags:
+        - Peliculas
+      summary: Eliminar pelicula del catalogo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pelicula eliminada
+
+components:
+  schemas:
+    CatalogoPelicula:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+          example: Inception
+        tmdb_id:
+          type: string
+          nullable: true
+          example: '27205'
+        poster_url:
+          type: string
+          example: https://image.tmdb.org/t/p/w500/inception.jpg
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateCatalogoPeliculaRequest:
+      type: object
+      required:
+        - titulo
+        - poster_url
+      properties:
+        titulo:
+          type: string
+        tmdb_id:
+          type: string
+        poster_url:
+          type: string
+
+    UpdateCatalogoPeliculaRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+        tmdb_id:
+          type: string
+          nullable: true
+        poster_url:
+          type: string
