@@ -1,0 +1,21 @@
+{
+  "name": "dates-matching",
+  "version": "1.0.0",
+  "description": "API RESTful construida con Node.js y TypeScript para \"El Plan Maestro\", una aplicación de *matchmaking* de decisiones exclusiva para parejas. Diseñada específicamente para resolver el eterno debate de \"¿Qué vemos hoy?\" y \"¿Qué pedimos de comer?\".",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JesusAraujoDEV/dates-matching.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/JesusAraujoDEV/dates-matching/issues"
+  },
+  "homepage": "https://github.com/JesusAraujoDEV/dates-matching#readme"
+}
