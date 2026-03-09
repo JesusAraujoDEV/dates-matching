@@ -9,6 +9,7 @@ import { authRouter } from "./routes/auth.routes";
 import { catalogoComidaRouter } from "./routes/catalogo-comida.routes";
 import { catalogoPeliculaRouter } from "./routes/catalogo-pelicula.routes";
 import { citaRouter } from "./routes/cita.routes";
+import { tmdbRouter } from "./routes/tmdb.routes";
 import { userRouter } from "./routes/user.routes";
 
 const app: Application = express();
@@ -20,6 +21,7 @@ app.use("/api/users", authMiddleware, userRouter);
 app.use("/api/citas", authMiddleware, citaRouter);
 app.use("/api/peliculas", authMiddleware, catalogoPeliculaRouter);
 app.use("/api/comidas", authMiddleware, catalogoComidaRouter);
+app.use("/api/tmdb", authMiddleware, tmdbRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/health", (_req: Request, res: Response) => {

@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - TMDB
+  version: 1.0.0
+  description: Endpoints para consumo de peliculas externas desde TMDB.
+
+paths:
+  /api/tmdb/search:
+    get:
+      tags:
+        - TMDB
+      summary: Buscar peliculas en TMDB
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          required: true
+          description: Texto de busqueda de pelicula
+          schema:
+            type: string
+            example: interestellar
+      responses:
+        '200':
+          description: Lista de resultados normalizados desde TMDB
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TmdbMovieSummary'
+        '400':
+          description: Query invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Error de comunicacion con TMDB
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    TmdbMovieSummary:
+      type: object
+      properties:
+        tmdb_id:
+          type: integer
+          example: 157336
+        titulo:
+          type: string
+          example: Interestellar
+        poster_url:
+          type: string
+          nullable: true
+          example: https://image.tmdb.org/t/p/w500/abcdef.jpg
+        descripcion:
+          type: string
+          example: Un grupo de exploradores viaja a traves de un agujero de gusano.
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error consultando TMDB (search/movie)

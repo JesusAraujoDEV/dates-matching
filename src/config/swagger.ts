@@ -37,6 +37,7 @@ const options: Options = {
       { name: "Citas", description: "Operaciones del modulo de citas" },
       { name: "Peliculas", description: "Catalogo de peliculas para swiping" },
       { name: "Comidas", description: "Catalogo de comidas para swiping" },
+      { name: "TMDB", description: "Busqueda externa de peliculas en TMDB" },
       { name: "Users", description: "Operaciones del modulo de usuarios" },
     ],
   },
