@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - Citas
+  version: 1.0.0
+  description: Endpoints del modulo de citas.
+
+paths:
+  /api/citas/{id}/voto:
+    post:
+      tags:
+        - Citas
+      summary: Emitir voto final de pelicula y comida
+      description: |
+        Registra el voto final de un usuario para una cita.
+        Si ambos usuarios ya votaron, aplica la logica Muerte Subita:
+        - Telepatia: si coinciden votos, se usa ese resultado.
+        - Ruleta: si no coinciden, se elige aleatoriamente entre ambas opciones.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID numerico de la cita
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmitirVotoFinalRequest'
+            examples:
+              votoJesus:
+                summary: Voto emitido por Jesus
+                value:
+                  usuarioId: 1
+                  pelicula: Inception
+                  comida: Sushi
+      responses:
+        '200':
+          description: Voto registrado o cita finalizada con resultado calculado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmitirVotoFinalResponse'
+        '400':
+          description: Request invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                badRequest:
+                  value:
+                    error: Debes enviar usuarioId, pelicula y comida en el body
+        '403':
+          description: Usuario no autorizado para votar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Cita o usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: La cita ya fue finalizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    EmitirVotoFinalRequest:
+      type: object
+      required:
+        - usuarioId
+        - pelicula
+        - comida
+      properties:
+        usuarioId:
+          type: integer
+          description: ID del usuario que emite el voto final
+          example: 1
+        pelicula:
+          type: string
+          description: Pelicula elegida por el usuario
+          example: Inception
+        comida:
+          type: string
+          description: Comida elegida por el usuario
+          example: Sushi
+
+    EmitirVotoFinalResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Ambos votaron. Resultado final calculado con Muerte Subita.
+        cita:
+          $ref: '#/components/schemas/Cita'
+
+    Cita:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        fecha:
+          type: string
+          format: date-time
+          example: 2026-03-09T20:00:00.000Z
+        tipo_cita:
+          type: string
+          example: cine_y_comida
+        estado:
+          type: string
+          enum: [creada, swiping, esperando_votos, finalizada]
+          example: finalizada
+        peliculas_match:
+          type: array
+          items:
+            type: string
+          example: [Inception, Interstellar]
+        comidas_match:
+          type: array
+          items:
+            type: string
+          example: [Sushi, Pizza]
+        voto_jesus_pelicula:
+          type: string
+          nullable: true
+          example: Inception
+        voto_jesus_comida:
+          type: string
+          nullable: true
+          example: Sushi
+        voto_piera_pelicula:
+          type: string
+          nullable: true
+          example: Interstellar
+        voto_piera_comida:
+          type: string
+          nullable: true
+          example: Pizza
+        resultado_pelicula:
+          type: string
+          nullable: true
+          example: Inception
+        resultado_comida:
+          type: string
+          nullable: true
+          example: Sushi
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Error interno del servidor

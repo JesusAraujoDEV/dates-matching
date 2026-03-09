@@ -1,0 +1,37 @@
+openapi: 3.0.3
+info:
+  title: Dates Matching API - Users
+  version: 1.0.0
+  description: Endpoints del modulo de usuarios.
+
+paths:
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: Listar usuarios
+      description: Ejemplo de archivo modular para endpoints de usuarios.
+      responses:
+        '200':
+          description: Lista de usuarios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Jesus
+        telefono:
+          type: string
+          example: '+34123456789'
