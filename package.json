@@ -2,9 +2,14 @@
   "name": "dates-matching",
   "version": "1.0.0",
   "description": "API RESTful construida con Node.js y TypeScript para \"El Plan Maestro\", una aplicación de *matchmaking* de decisiones exclusiva para parejas. Diseñada específicamente para resolver el eterno debate de \"¿Qué vemos hoy?\" y \"¿Qué pedimos de comer?\".",
-  "main": "index.js",
+  "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "test": "echo \"No tests configured yet\""
   },
   "repository": {
     "type": "git",
@@ -17,5 +22,18 @@
   "bugs": {
     "url": "https://github.com/JesusAraujoDEV/dates-matching/issues"
   },
-  "homepage": "https://github.com/JesusAraujoDEV/dates-matching#readme"
+  "homepage": "https://github.com/JesusAraujoDEV/dates-matching#readme",
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.4.0",
+    "prisma": "^7.4.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  }
 }

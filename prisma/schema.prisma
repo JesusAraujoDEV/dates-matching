@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoCita {
+  creada
+  swiping
+  esperando_votos
+  finalizada
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  nombre   String
+  telefono String
+}
+
+model Cita {
+  id                  Int        @id @default(autoincrement())
+  fecha               DateTime
+  tipo_cita           String
+  estado              EstadoCita @default(creada)
+  peliculas_match     Json
+  comidas_match       Json
+  voto_jesus_pelicula String?
+  voto_jesus_comida   String?
+  voto_piera_pelicula String?
+  voto_piera_comida   String?
+  resultado_pelicula  String?
+  resultado_comida    String?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+}
