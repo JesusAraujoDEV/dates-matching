@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, isAxiosError } from "axios";
 
 import {
   TmdbMovieDetails,
@@ -40,7 +40,7 @@ export class TmdbService {
         {
           params: {
             query: query.trim(),
-            language: "es-ES",
+            language: "en-EN",
           },
         },
       );
@@ -53,8 +53,27 @@ export class TmdbService {
           : null,
         descripcion: movie.overview ?? "",
       }));
-    } catch {
-      throw new AppError("Error consultando TMDB (search/movie)", 502);
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        if (error.response) {
+          // Log para depuracion detallada de TMDB en terminal
+          // eslint-disable-next-line no-console
+          console.error("TMDB search/movie error response:", error.response.data);
+
+          const tmdbMessage = this.extractTmdbMessage(error.response.data);
+          throw new AppError(
+            `Error consultando TMDB (search/movie): ${tmdbMessage}`,
+            error.response.status || 500,
+          );
+        }
+
+        throw new AppError(
+          `Error consultando TMDB (search/movie): ${error.message}`,
+          500,
+        );
+      }
+
+      throw new AppError("Error interno consultando TMDB (search/movie)", 500);
     }
   }
 
@@ -66,13 +85,50 @@ export class TmdbService {
     try {
       const { data } = await this.client.get<TmdbMovieDetails>(`/movie/${id}`, {
         params: {
-          language: "es-ES",
+          language: "en-EN",
         },
       });
 
       return data;
-    } catch {
-      throw new AppError("Error consultando TMDB (movie/{id})", 502);
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        if (error.response) {
+          // Log para depuracion detallada de TMDB en terminal
+          // eslint-disable-next-line no-console
+          console.error("TMDB movie/{id} error response:", error.response.data);
+
+          const tmdbMessage = this.extractTmdbMessage(error.response.data);
+          throw new AppError(
+            `Error consultando TMDB (movie/{id}): ${tmdbMessage}`,
+            error.response.status || 500,
+          );
+        }
+
+        throw new AppError(
+          `Error consultando TMDB (movie/{id}): ${error.message}`,
+          500,
+        );
+      }
+
+      throw new AppError("Error interno consultando TMDB (movie/{id})", 500);
     }
+  }
+
+  private extractTmdbMessage(payload: unknown): string {
+    if (!payload || typeof payload !== "object") {
+      return "TMDB devolvio una respuesta sin detalle";
+    }
+
+    const maybePayload = payload as { status_message?: unknown; message?: unknown };
+
+    if (typeof maybePayload.status_message === "string") {
+      return maybePayload.status_message;
+    }
+
+    if (typeof maybePayload.message === "string") {
+      return maybePayload.message;
+    }
+
+    return "TMDB devolvio una respuesta sin status_message";
   }
 }
