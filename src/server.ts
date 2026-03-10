@@ -5,6 +5,7 @@ import express, { Application, Request, Response } from "express";
 import { swaggerSpec, swaggerUi } from "./config/swagger";
 import { authMiddleware } from "./middlewares/auth.middleware";
 import { errorHandlerMiddleware } from "./middlewares/error-handler.middleware";
+import { loggerMiddleware } from "./middlewares/logger.middleware";
 import { authRouter } from "./routes/auth.routes";
 import { catalogoComidaRouter } from "./routes/catalogo-comida.routes";
 import { catalogoPeliculaRouter } from "./routes/catalogo-pelicula.routes";
@@ -16,6 +17,7 @@ const app: Application = express();
 const PORT = Number(process.env.PORT) || 3000;
 
 app.use(express.json());
+app.use(loggerMiddleware);
 app.use("/api/auth", authRouter);
 app.use("/api/users", authMiddleware, userRouter);
 app.use("/api/citas", authMiddleware, citaRouter);
