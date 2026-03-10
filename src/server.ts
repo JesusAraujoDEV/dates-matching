@@ -1,5 +1,6 @@
 import "dotenv/config";
 
+import cors, { CorsOptions } from "cors";
 import express, { Application, Request, Response } from "express";
 
 import { swaggerSpec, swaggerUi } from "./config/swagger";
@@ -15,7 +16,26 @@ import { userRouter } from "./routes/user.routes";
 
 const app: Application = express();
 const PORT = Number(process.env.PORT) || 3000;
+const whitelistUrls = (process.env.WHITELIST_URLS || "")
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
 
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (whitelistUrls.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(loggerMiddleware);
 app.use("/api/auth", authRouter);
