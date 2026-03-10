@@ -30,7 +30,16 @@ export class CatalogoPeliculaService {
       throw new AppError("titulo y poster_url son obligatorios", 400);
     }
 
-    return this.catalogoPeliculaRepository.create(payload);
+    const normalizedTmdbId =
+      payload.tmdb_id === null || payload.tmdb_id === undefined
+        ? undefined
+        : String(payload.tmdb_id);
+
+    return this.catalogoPeliculaRepository.create({
+      titulo: payload.titulo,
+      poster_url: payload.poster_url,
+      tmdb_id: normalizedTmdbId,
+    });
   }
 
   async update(payload: UpdateCatalogoPeliculaParams): Promise<CatalogoPelicula> {
@@ -50,7 +59,12 @@ export class CatalogoPeliculaService {
 
     return this.catalogoPeliculaRepository.update(payload.id, {
       titulo: payload.titulo,
-      tmdb_id: payload.tmdb_id,
+      tmdb_id:
+        payload.tmdb_id === undefined
+          ? undefined
+          : payload.tmdb_id === null
+            ? null
+            : String(payload.tmdb_id),
       poster_url: payload.poster_url,
     });
   }
