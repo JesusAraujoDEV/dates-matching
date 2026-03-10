@@ -19,6 +19,13 @@ export class AuthService {
       throw new AppError("Credenciales invalidas", 401);
     }
 
+    if (!user.password || typeof user.password !== "string") {
+      throw new AppError(
+        "El usuario no tiene password configurada en base de datos",
+        500,
+      );
+    }
+
     const isValidPassword = await bcrypt.compare(payload.password, user.password);
 
     if (!isValidPassword) {
