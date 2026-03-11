@@ -69,6 +69,10 @@ export type CitaCountAggregateOutputType = {
   fecha: number
   tipo_cita: number
   estado: number
+  swipes_jesus_peliculas: number
+  swipes_jesus_comidas: number
+  swipes_piera_peliculas: number
+  swipes_piera_comidas: number
   peliculas_match: number
   comidas_match: number
   voto_jesus_pelicula: number
@@ -126,6 +130,10 @@ export type CitaCountAggregateInputType = {
   fecha?: true
   tipo_cita?: true
   estado?: true
+  swipes_jesus_peliculas?: true
+  swipes_jesus_comidas?: true
+  swipes_piera_peliculas?: true
+  swipes_piera_comidas?: true
   peliculas_match?: true
   comidas_match?: true
   voto_jesus_pelicula?: true
@@ -230,6 +238,10 @@ export type CitaGroupByOutputType = {
   fecha: Date
   tipo_cita: string
   estado: $Enums.EstadoCita
+  swipes_jesus_peliculas: runtime.JsonValue
+  swipes_jesus_comidas: runtime.JsonValue
+  swipes_piera_peliculas: runtime.JsonValue
+  swipes_piera_comidas: runtime.JsonValue
   peliculas_match: runtime.JsonValue
   comidas_match: runtime.JsonValue
   voto_jesus_pelicula: string | null
@@ -270,6 +282,10 @@ export type CitaWhereInput = {
   fecha?: Prisma.DateTimeFilter<"Cita"> | Date | string
   tipo_cita?: Prisma.StringFilter<"Cita"> | string
   estado?: Prisma.EnumEstadoCitaFilter<"Cita"> | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonFilter<"Cita">
+  swipes_jesus_comidas?: Prisma.JsonFilter<"Cita">
+  swipes_piera_peliculas?: Prisma.JsonFilter<"Cita">
+  swipes_piera_comidas?: Prisma.JsonFilter<"Cita">
   peliculas_match?: Prisma.JsonFilter<"Cita">
   comidas_match?: Prisma.JsonFilter<"Cita">
   voto_jesus_pelicula?: Prisma.StringNullableFilter<"Cita"> | string | null
@@ -287,6 +303,10 @@ export type CitaOrderByWithRelationInput = {
   fecha?: Prisma.SortOrder
   tipo_cita?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  swipes_jesus_peliculas?: Prisma.SortOrder
+  swipes_jesus_comidas?: Prisma.SortOrder
+  swipes_piera_peliculas?: Prisma.SortOrder
+  swipes_piera_comidas?: Prisma.SortOrder
   peliculas_match?: Prisma.SortOrder
   comidas_match?: Prisma.SortOrder
   voto_jesus_pelicula?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -307,6 +327,10 @@ export type CitaWhereUniqueInput = Prisma.AtLeast<{
   fecha?: Prisma.DateTimeFilter<"Cita"> | Date | string
   tipo_cita?: Prisma.StringFilter<"Cita"> | string
   estado?: Prisma.EnumEstadoCitaFilter<"Cita"> | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonFilter<"Cita">
+  swipes_jesus_comidas?: Prisma.JsonFilter<"Cita">
+  swipes_piera_peliculas?: Prisma.JsonFilter<"Cita">
+  swipes_piera_comidas?: Prisma.JsonFilter<"Cita">
   peliculas_match?: Prisma.JsonFilter<"Cita">
   comidas_match?: Prisma.JsonFilter<"Cita">
   voto_jesus_pelicula?: Prisma.StringNullableFilter<"Cita"> | string | null
@@ -324,6 +348,10 @@ export type CitaOrderByWithAggregationInput = {
   fecha?: Prisma.SortOrder
   tipo_cita?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  swipes_jesus_peliculas?: Prisma.SortOrder
+  swipes_jesus_comidas?: Prisma.SortOrder
+  swipes_piera_peliculas?: Prisma.SortOrder
+  swipes_piera_comidas?: Prisma.SortOrder
   peliculas_match?: Prisma.SortOrder
   comidas_match?: Prisma.SortOrder
   voto_jesus_pelicula?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -349,6 +377,10 @@ export type CitaScalarWhereWithAggregatesInput = {
   fecha?: Prisma.DateTimeWithAggregatesFilter<"Cita"> | Date | string
   tipo_cita?: Prisma.StringWithAggregatesFilter<"Cita"> | string
   estado?: Prisma.EnumEstadoCitaWithAggregatesFilter<"Cita"> | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonWithAggregatesFilter<"Cita">
+  swipes_jesus_comidas?: Prisma.JsonWithAggregatesFilter<"Cita">
+  swipes_piera_peliculas?: Prisma.JsonWithAggregatesFilter<"Cita">
+  swipes_piera_comidas?: Prisma.JsonWithAggregatesFilter<"Cita">
   peliculas_match?: Prisma.JsonWithAggregatesFilter<"Cita">
   comidas_match?: Prisma.JsonWithAggregatesFilter<"Cita">
   voto_jesus_pelicula?: Prisma.StringNullableWithAggregatesFilter<"Cita"> | string | null
@@ -365,8 +397,12 @@ export type CitaCreateInput = {
   fecha: Date | string
   tipo_cita: string
   estado?: $Enums.EstadoCita
-  peliculas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  comidas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: string | null
   voto_jesus_comida?: string | null
   voto_piera_pelicula?: string | null
@@ -382,8 +418,12 @@ export type CitaUncheckedCreateInput = {
   fecha: Date | string
   tipo_cita: string
   estado?: $Enums.EstadoCita
-  peliculas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  comidas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: string | null
   voto_jesus_comida?: string | null
   voto_piera_pelicula?: string | null
@@ -398,6 +438,10 @@ export type CitaUpdateInput = {
   fecha?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipo_cita?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.EnumEstadoCitaFieldUpdateOperationsInput | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -415,6 +459,10 @@ export type CitaUncheckedUpdateInput = {
   fecha?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipo_cita?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.EnumEstadoCitaFieldUpdateOperationsInput | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -432,8 +480,12 @@ export type CitaCreateManyInput = {
   fecha: Date | string
   tipo_cita: string
   estado?: $Enums.EstadoCita
-  peliculas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  comidas_match: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: string | null
   voto_jesus_comida?: string | null
   voto_piera_pelicula?: string | null
@@ -448,6 +500,10 @@ export type CitaUpdateManyMutationInput = {
   fecha?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipo_cita?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.EnumEstadoCitaFieldUpdateOperationsInput | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -465,6 +521,10 @@ export type CitaUncheckedUpdateManyInput = {
   fecha?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tipo_cita?: Prisma.StringFieldUpdateOperationsInput | string
   estado?: Prisma.EnumEstadoCitaFieldUpdateOperationsInput | $Enums.EstadoCita
+  swipes_jesus_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_jesus_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_peliculas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  swipes_piera_comidas?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   peliculas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   comidas_match?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   voto_jesus_pelicula?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -482,6 +542,10 @@ export type CitaCountOrderByAggregateInput = {
   fecha?: Prisma.SortOrder
   tipo_cita?: Prisma.SortOrder
   estado?: Prisma.SortOrder
+  swipes_jesus_peliculas?: Prisma.SortOrder
+  swipes_jesus_comidas?: Prisma.SortOrder
+  swipes_piera_peliculas?: Prisma.SortOrder
+  swipes_piera_comidas?: Prisma.SortOrder
   peliculas_match?: Prisma.SortOrder
   comidas_match?: Prisma.SortOrder
   voto_jesus_pelicula?: Prisma.SortOrder
@@ -551,6 +615,10 @@ export type CitaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fecha?: boolean
   tipo_cita?: boolean
   estado?: boolean
+  swipes_jesus_peliculas?: boolean
+  swipes_jesus_comidas?: boolean
+  swipes_piera_peliculas?: boolean
+  swipes_piera_comidas?: boolean
   peliculas_match?: boolean
   comidas_match?: boolean
   voto_jesus_pelicula?: boolean
@@ -568,6 +636,10 @@ export type CitaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fecha?: boolean
   tipo_cita?: boolean
   estado?: boolean
+  swipes_jesus_peliculas?: boolean
+  swipes_jesus_comidas?: boolean
+  swipes_piera_peliculas?: boolean
+  swipes_piera_comidas?: boolean
   peliculas_match?: boolean
   comidas_match?: boolean
   voto_jesus_pelicula?: boolean
@@ -585,6 +657,10 @@ export type CitaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   fecha?: boolean
   tipo_cita?: boolean
   estado?: boolean
+  swipes_jesus_peliculas?: boolean
+  swipes_jesus_comidas?: boolean
+  swipes_piera_peliculas?: boolean
+  swipes_piera_comidas?: boolean
   peliculas_match?: boolean
   comidas_match?: boolean
   voto_jesus_pelicula?: boolean
@@ -602,6 +678,10 @@ export type CitaSelectScalar = {
   fecha?: boolean
   tipo_cita?: boolean
   estado?: boolean
+  swipes_jesus_peliculas?: boolean
+  swipes_jesus_comidas?: boolean
+  swipes_piera_peliculas?: boolean
+  swipes_piera_comidas?: boolean
   peliculas_match?: boolean
   comidas_match?: boolean
   voto_jesus_pelicula?: boolean
@@ -614,7 +694,7 @@ export type CitaSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CitaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fecha" | "tipo_cita" | "estado" | "peliculas_match" | "comidas_match" | "voto_jesus_pelicula" | "voto_jesus_comida" | "voto_piera_pelicula" | "voto_piera_comida" | "resultado_pelicula" | "resultado_comida" | "createdAt" | "updatedAt", ExtArgs["result"]["cita"]>
+export type CitaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fecha" | "tipo_cita" | "estado" | "swipes_jesus_peliculas" | "swipes_jesus_comidas" | "swipes_piera_peliculas" | "swipes_piera_comidas" | "peliculas_match" | "comidas_match" | "voto_jesus_pelicula" | "voto_jesus_comida" | "voto_piera_pelicula" | "voto_piera_comida" | "resultado_pelicula" | "resultado_comida" | "createdAt" | "updatedAt", ExtArgs["result"]["cita"]>
 
 export type $CitaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Cita"
@@ -624,6 +704,10 @@ export type $CitaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     fecha: Date
     tipo_cita: string
     estado: $Enums.EstadoCita
+    swipes_jesus_peliculas: runtime.JsonValue
+    swipes_jesus_comidas: runtime.JsonValue
+    swipes_piera_peliculas: runtime.JsonValue
+    swipes_piera_comidas: runtime.JsonValue
     peliculas_match: runtime.JsonValue
     comidas_match: runtime.JsonValue
     voto_jesus_pelicula: string | null
@@ -1061,6 +1145,10 @@ export interface CitaFieldRefs {
   readonly fecha: Prisma.FieldRef<"Cita", 'DateTime'>
   readonly tipo_cita: Prisma.FieldRef<"Cita", 'String'>
   readonly estado: Prisma.FieldRef<"Cita", 'EstadoCita'>
+  readonly swipes_jesus_peliculas: Prisma.FieldRef<"Cita", 'Json'>
+  readonly swipes_jesus_comidas: Prisma.FieldRef<"Cita", 'Json'>
+  readonly swipes_piera_peliculas: Prisma.FieldRef<"Cita", 'Json'>
+  readonly swipes_piera_comidas: Prisma.FieldRef<"Cita", 'Json'>
   readonly peliculas_match: Prisma.FieldRef<"Cita", 'Json'>
   readonly comidas_match: Prisma.FieldRef<"Cita", 'Json'>
   readonly voto_jesus_pelicula: Prisma.FieldRef<"Cita", 'String'>

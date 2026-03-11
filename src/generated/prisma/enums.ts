@@ -10,9 +10,8 @@
 */
 
 export const EstadoCita = {
-  creada: 'creada',
-  swiping: 'swiping',
-  esperando_votos: 'esperando_votos',
+  esperando_pareja: 'esperando_pareja',
+  muerte_subita: 'muerte_subita',
   finalizada: 'finalizada'
 } as const
 

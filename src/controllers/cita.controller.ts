@@ -75,17 +75,23 @@ export class CitaController {
     next: NextFunction,
   ): Promise<Response | void> => {
     try {
-      ensureRequestBody(req.body, ["fecha", "tipo_cita"]);
-      const { fecha, tipo_cita, peliculas_match, comidas_match } = req.body;
+      ensureRequestBody(req.body, ["fecha", "tipo_cita", "peliculas", "comidas"]);
+
+      if (!req.user?.nombre) {
+        throw new AppError("Usuario autenticado no disponible", 401);
+      }
+
+      const { fecha, tipo_cita, peliculas, comidas } = req.body;
 
       const cita = await this.citaService.create({
         fecha,
         tipo_cita,
-        peliculas_match,
-        comidas_match,
+        peliculas,
+        comidas,
+        userName: req.user.nombre,
       });
 
-      return res.status(201).json(cita);
+      return res.status(cita.created ? 201 : 200).json(cita.cita);
     } catch (error) {
       return next(error);
     }

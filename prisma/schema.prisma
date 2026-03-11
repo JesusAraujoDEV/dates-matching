@@ -8,9 +8,8 @@ datasource db {
 }
 
 enum EstadoCita {
-  creada
-  swiping
-  esperando_votos
+  esperando_pareja
+  muerte_subita
   finalizada
 }
 
@@ -25,9 +24,13 @@ model Cita {
   id                  Int        @id @default(autoincrement())
   fecha               DateTime
   tipo_cita           String
-  estado              EstadoCita @default(creada)
-  peliculas_match     Json
-  comidas_match       Json
+  estado              EstadoCita @default(esperando_pareja)
+  swipes_jesus_peliculas Json     @default("[]")
+  swipes_jesus_comidas   Json     @default("[]")
+  swipes_piera_peliculas Json     @default("[]")
+  swipes_piera_comidas   Json     @default("[]")
+  peliculas_match     Json       @default("[]")
+  comidas_match       Json       @default("[]")
   voto_jesus_pelicula String?
   voto_jesus_comida   String?
   voto_piera_pelicula String?

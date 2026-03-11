@@ -3,6 +3,7 @@ import { Cita } from "../generated/prisma/client";
 import { CitaRepository } from "../repositories/cita.repository";
 import {
   CreateCitaParams,
+  CreateCitaResponse,
   EmitirVotoFinalParams,
   EmitirVotoFinalResponse,
   UpdateCitaParams,
@@ -27,13 +28,13 @@ export class CitaService {
     return cita;
   }
 
-  async create(payload: CreateCitaParams): Promise<Cita> {
+  async create(payload: CreateCitaParams): Promise<CreateCitaResponse> {
     if (!payload.fecha || !payload.tipo_cita) {
       throw new AppError("fecha y tipo_cita son obligatorios", 400);
     }
 
-    if (!Array.isArray(payload.peliculas_match) || !Array.isArray(payload.comidas_match)) {
-      throw new AppError("peliculas_match y comidas_match deben ser arrays", 400);
+    if (!Array.isArray(payload.peliculas) || !Array.isArray(payload.comidas)) {
+      throw new AppError("peliculas y comidas deben ser arrays", 400);
     }
 
     const parsedDate = new Date(payload.fecha);
@@ -42,13 +43,81 @@ export class CitaService {
       throw new AppError("fecha debe tener formato ISO valido", 400);
     }
 
-    return this.citaRepository.create({
-      fecha: parsedDate,
-      tipo_cita: payload.tipo_cita,
-      peliculas_match: payload.peliculas_match,
-      comidas_match: payload.comidas_match,
-      estado: "creada",
+    const votante = this.resolveVotante(payload.userName);
+    const { dayStart, nextDayStart } = this.getDayRangeUtc(parsedDate);
+    const existingCita = await this.citaRepository.findByFechaRange(
+      dayStart,
+      nextDayStart,
+    );
+
+    if (!existingCita) {
+      const cita = await this.citaRepository.create({
+        fecha: parsedDate,
+        tipo_cita: payload.tipo_cita,
+        estado: "esperando_pareja",
+        swipes_jesus_peliculas:
+          votante === "jesus" ? payload.peliculas : [],
+        swipes_jesus_comidas: votante === "jesus" ? payload.comidas : [],
+        swipes_piera_peliculas:
+          votante === "piera" ? payload.peliculas : [],
+        swipes_piera_comidas: votante === "piera" ? payload.comidas : [],
+        peliculas_match: [],
+        comidas_match: [],
+      });
+
+      return { cita, created: true };
+    }
+
+    if (existingCita.estado === "finalizada") {
+      throw new AppError("La cita de esa fecha ya fue finalizada", 409);
+    }
+
+    if (existingCita.estado === "muerte_subita") {
+      throw new AppError(
+        "La cita de esa fecha ya termino la fase de swipes",
+        409,
+      );
+    }
+
+    if (this.userAlreadySubmittedSwipes(existingCita, votante)) {
+      throw new AppError("Este usuario ya envio sus swipes para esta cita", 409);
+    }
+
+    const peliculasPrevias = this.getStoredPeliculasByUser(existingCita, votante);
+    const comidasPrevias = this.getStoredComidasByUser(existingCita, votante);
+
+    const peliculasMatch = this.intersectStringArrays(
+      peliculasPrevias,
+      payload.peliculas,
+    );
+    const comidasMatch = this.intersectStringArrays(
+      comidasPrevias,
+      payload.comidas,
+    );
+
+    const cita = await this.citaRepository.update(existingCita.id, {
+      swipes_jesus_peliculas:
+        votante === "jesus"
+          ? payload.peliculas
+          : this.normalizeStringArray(existingCita.swipes_jesus_peliculas),
+      swipes_jesus_comidas:
+        votante === "jesus"
+          ? payload.comidas
+          : this.normalizeStringArray(existingCita.swipes_jesus_comidas),
+      swipes_piera_peliculas:
+        votante === "piera"
+          ? payload.peliculas
+          : this.normalizeStringArray(existingCita.swipes_piera_peliculas),
+      swipes_piera_comidas:
+        votante === "piera"
+          ? payload.comidas
+          : this.normalizeStringArray(existingCita.swipes_piera_comidas),
+      peliculas_match: peliculasMatch,
+      comidas_match: comidasMatch,
+      estado: "muerte_subita",
     });
+
+    return { cita, created: false };
   }
 
   async updateResultadoManual(payload: UpdateCitaParams): Promise<Cita> {
@@ -103,13 +172,9 @@ export class CitaService {
     const ambosVotaron = this.ambosVotaron(citaConVoto);
 
     if (!ambosVotaron) {
-      const citaEsperando = await this.citaRepository.updateVote(payload.citaId, {
-        estado: "esperando_votos",
-      });
-
       return {
         message: "Voto registrado. Esperando el voto de la otra persona.",
-        cita: citaEsperando,
+        cita: citaConVoto,
       };
     }
 
@@ -193,5 +258,78 @@ export class CitaService {
   private ruleta(opciones: [string, string]): string {
     const randomIndex = Math.floor(Math.random() * opciones.length);
     return opciones[randomIndex];
+  }
+
+  private getDayRangeUtc(date: Date): { dayStart: Date; nextDayStart: Date } {
+    const dayStart = new Date(date);
+    dayStart.setUTCHours(0, 0, 0, 0);
+
+    const nextDayStart = new Date(dayStart);
+    nextDayStart.setUTCDate(nextDayStart.getUTCDate() + 1);
+
+    return { dayStart, nextDayStart };
+  }
+
+  private intersectStringArrays(left: unknown, right: unknown): string[] {
+    if (!Array.isArray(left) || !Array.isArray(right)) {
+      return [];
+    }
+
+    const leftValues = left.filter(
+      (item): item is string => typeof item === "string" && item.trim().length > 0,
+    );
+    const rightSet = new Set(
+      right.filter(
+        (item): item is string =>
+          typeof item === "string" && item.trim().length > 0,
+      ),
+    );
+
+    return [...new Set(leftValues.filter((item) => rightSet.has(item)))];
+  }
+
+  private userAlreadySubmittedSwipes(cita: Cita, votante: UsuarioVotante): boolean {
+    const peliculas = this.getOwnPeliculasByUser(cita, votante);
+    const comidas = this.getOwnComidasByUser(cita, votante);
+
+    return peliculas.length > 0 || comidas.length > 0;
+  }
+
+  private getStoredPeliculasByUser(cita: Cita, votante: UsuarioVotante): unknown {
+    return votante === "jesus"
+      ? cita.swipes_piera_peliculas
+      : cita.swipes_jesus_peliculas;
+  }
+
+  private getStoredComidasByUser(cita: Cita, votante: UsuarioVotante): unknown {
+    return votante === "jesus"
+      ? cita.swipes_piera_comidas
+      : cita.swipes_jesus_comidas;
+  }
+
+  private getOwnPeliculasByUser(cita: Cita, votante: UsuarioVotante): string[] {
+    return this.normalizeStringArray(
+      votante === "jesus"
+        ? cita.swipes_jesus_peliculas
+        : cita.swipes_piera_peliculas,
+    );
+  }
+
+  private getOwnComidasByUser(cita: Cita, votante: UsuarioVotante): string[] {
+    return this.normalizeStringArray(
+      votante === "jesus"
+        ? cita.swipes_jesus_comidas
+        : cita.swipes_piera_comidas,
+    );
+  }
+
+  private normalizeStringArray(value: unknown): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+
+    return value.filter(
+      (item): item is string => typeof item === "string" && item.trim().length > 0,
+    );
   }
 }

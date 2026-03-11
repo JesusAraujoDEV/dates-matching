@@ -13,6 +13,21 @@ export class CitaRepository {
     return prisma.cita.findUnique({ where: { id } });
   }
 
+  async findByFechaRange(
+    fechaStart: Date,
+    fechaEnd: Date,
+  ): Promise<Cita | null> {
+    return prisma.cita.findFirst({
+      where: {
+        fecha: {
+          gte: fechaStart,
+          lt: fechaEnd,
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
   async findUserById(id: number): Promise<User | null> {
     return prisma.user.findUnique({ where: { id } });
   }

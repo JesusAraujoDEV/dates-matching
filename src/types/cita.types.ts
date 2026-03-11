@@ -23,8 +23,8 @@ export interface EmitirVotoFinalResponse {
 export interface CreateCitaBody {
   fecha: string;
   tipo_cita: string;
-  peliculas_match: string[];
-  comidas_match: string[];
+  peliculas: string[];
+  comidas: string[];
 }
 
 export interface UpdateCitaBody {
@@ -35,8 +35,14 @@ export interface UpdateCitaBody {
 export interface CreateCitaParams {
   fecha: string;
   tipo_cita: string;
-  peliculas_match: string[];
-  comidas_match: string[];
+  peliculas: string[];
+  comidas: string[];
+  userName: string;
+}
+
+export interface CreateCitaResponse {
+  cita: Cita;
+  created: boolean;
 }
 
 export interface UpdateCitaParams {
