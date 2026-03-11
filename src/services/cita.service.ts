@@ -95,6 +95,14 @@ export class CitaService {
       payload.comidas,
     );
 
+    const resultadoPelicula =
+      peliculasMatch.length === 1 ? peliculasMatch[0] : null;
+    const resultadoComida = comidasMatch.length === 1 ? comidasMatch[0] : null;
+    const estadoFinal =
+      peliculasMatch.length === 1 && comidasMatch.length === 1
+        ? "finalizada"
+        : "muerte_subita";
+
     const cita = await this.citaRepository.update(existingCita.id, {
       swipes_jesus_peliculas:
         votante === "jesus"
@@ -114,7 +122,9 @@ export class CitaService {
           : this.normalizeStringArray(existingCita.swipes_piera_comidas),
       peliculas_match: peliculasMatch,
       comidas_match: comidasMatch,
-      estado: "muerte_subita",
+      resultado_pelicula: resultadoPelicula,
+      resultado_comida: resultadoComida,
+      estado: estadoFinal,
     });
 
     return { cita, created: false };
