@@ -7,7 +7,7 @@ import {
   UpdateCitaBody,
 } from "../types/cita.types";
 import { AppError } from "../utils/app-error";
-import { parseNumericId } from "../utils/request-helpers";
+import { ensureRequestBody, parseNumericId } from "../utils/request-helpers";
 
 export class CitaController {
   constructor(private readonly citaService: CitaService) {}
@@ -19,6 +19,7 @@ export class CitaController {
   ): Promise<Response | void> => {
     try {
       const citaId = parseNumericId(req.params.id, "id");
+      ensureRequestBody(req.body, ["usuarioId", "pelicula", "comida"]);
       const { usuarioId, pelicula, comida } = req.body;
 
       if (!Number.isInteger(usuarioId) || !pelicula || !comida) {
@@ -74,6 +75,7 @@ export class CitaController {
     next: NextFunction,
   ): Promise<Response | void> => {
     try {
+      ensureRequestBody(req.body, ["fecha", "tipo_cita"]);
       const { fecha, tipo_cita, peliculas_match, comidas_match } = req.body;
 
       const cita = await this.citaService.create({
@@ -96,6 +98,7 @@ export class CitaController {
   ): Promise<Response | void> => {
     try {
       const id = parseNumericId(req.params.id, "id");
+      ensureRequestBody(req.body, ["resultado_pelicula", "resultado_comida"]);
       const { resultado_pelicula, resultado_comida } = req.body;
 
       const cita = await this.citaService.updateResultadoManual({

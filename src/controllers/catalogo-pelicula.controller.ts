@@ -5,7 +5,7 @@ import {
   CreateCatalogoPeliculaBody,
   UpdateCatalogoPeliculaBody,
 } from "../types/catalogo-pelicula.types";
-import { parseNumericId } from "../utils/request-helpers";
+import { ensureRequestBody, parseNumericId } from "../utils/request-helpers";
 
 export class CatalogoPeliculaController {
   constructor(private readonly catalogoPeliculaService: CatalogoPeliculaService) {}
@@ -43,6 +43,7 @@ export class CatalogoPeliculaController {
     next: NextFunction,
   ): Promise<Response | void> => {
     try {
+      ensureRequestBody(req.body);
       const pelicula = await this.catalogoPeliculaService.create(req.body);
       return res.status(201).json(pelicula);
     } catch (error) {
@@ -57,6 +58,7 @@ export class CatalogoPeliculaController {
   ): Promise<Response | void> => {
     try {
       const id = parseNumericId(req.params.id, "id");
+      ensureRequestBody(req.body);
       const pelicula = await this.catalogoPeliculaService.update({
         id,
         ...req.body,

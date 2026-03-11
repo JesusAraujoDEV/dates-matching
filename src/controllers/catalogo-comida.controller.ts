@@ -5,7 +5,7 @@ import {
   CreateCatalogoComidaBody,
   UpdateCatalogoComidaBody,
 } from "../types/catalogo-comida.types";
-import { parseNumericId } from "../utils/request-helpers";
+import { ensureRequestBody, parseNumericId } from "../utils/request-helpers";
 
 export class CatalogoComidaController {
   constructor(private readonly catalogoComidaService: CatalogoComidaService) {}
@@ -43,6 +43,7 @@ export class CatalogoComidaController {
     next: NextFunction,
   ): Promise<Response | void> => {
     try {
+      ensureRequestBody(req.body);
       const comida = await this.catalogoComidaService.create(req.body);
       return res.status(201).json(comida);
     } catch (error) {
@@ -57,6 +58,7 @@ export class CatalogoComidaController {
   ): Promise<Response | void> => {
     try {
       const id = parseNumericId(req.params.id, "id");
+      ensureRequestBody(req.body);
       const comida = await this.catalogoComidaService.update({ id, ...req.body });
       return res.status(200).json(comida);
     } catch (error) {

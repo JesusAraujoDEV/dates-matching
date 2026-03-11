@@ -14,12 +14,16 @@ import { citaRouter } from "./routes/cita.routes";
 import { tmdbRouter } from "./routes/tmdb.routes";
 import { userRouter } from "./routes/user.routes";
 
+// 2) Inicializacion de la app
 const app: Application = express();
 const PORT = Number(process.env.PORT) || 3000;
 const whitelistUrls = (process.env.WHITELIST_URLS || "")
   .split(",")
   .map((url) => url.trim())
   .filter(Boolean);
+const normalizedWhitelistUrls = whitelistUrls.map((url) =>
+  url.replace(/\/+$/, ""),
+);
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
@@ -27,7 +31,9 @@ const corsOptions: CorsOptions = {
       return callback(null, true);
     }
 
-    if (whitelistUrls.includes(origin)) {
+    const normalizedOrigin = origin.replace(/\/+$/, "");
+
+    if (normalizedWhitelistUrls.includes(normalizedOrigin)) {
       return callback(null, true);
     }
 
@@ -35,9 +41,16 @@ const corsOptions: CorsOptions = {
   },
 };
 
+// 3) Middlewares de configuracion (CORS)
 app.use(cors(corsOptions));
-app.use(express.json());
+
+// 4) Middleware de parseo (DEBE ir antes de logger y rutas)
+app.use(express.json({ type: "*/*" }));
+
+// 5) Middleware de logging global
 app.use(loggerMiddleware);
+
+// 6) Rutas de la API
 app.use("/api/auth", authRouter);
 app.use("/api/users", authMiddleware, userRouter);
 app.use("/api/citas", authMiddleware, citaRouter);
@@ -50,6 +63,7 @@ app.get("/health", (_req: Request, res: Response) => {
   return res.status(200).json({ ok: true, message: "API funcionando" });
 });
 
+// 7) Middleware de manejo de errores globales
 app.use(errorHandlerMiddleware);
 
 app.listen(PORT, () => {
