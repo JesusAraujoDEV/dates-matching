@@ -59,4 +59,8 @@ export class CitaRepository {
       },
     });
   }
+
+  async delete(id: number): Promise<Cita> {
+    return prisma.cita.delete({ where: { id } });
+  }
 }

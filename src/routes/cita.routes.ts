@@ -15,5 +15,6 @@ citaRouter.get("/:id", citaController.findById);
 citaRouter.post("/", citaController.create);
 citaRouter.put("/:id", citaController.updateResultadoManual);
 citaRouter.post("/:id/voto", citaController.emitirVotoFinal);
+citaRouter.delete("/:id", citaController.delete);
 
 export { citaRouter };

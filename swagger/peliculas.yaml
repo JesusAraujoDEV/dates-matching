@@ -12,6 +12,16 @@ paths:
       security:
         - bearerAuth: []
       summary: Listar peliculas del catalogo
+      parameters:
+        - in: query
+          name: active
+          required: false
+          description: |
+            Filtra por visibilidad. Usa `true` para solo activas, `false` para inactivas.
+            Si no se envia, devuelve todo el catalogo.
+          schema:
+            type: string
+            enum: ['true', 'false', 'all']
       responses:
         '200':
           description: Lista de peliculas
@@ -110,6 +120,30 @@ paths:
         '200':
           description: Pelicula eliminada
 
+  /api/peliculas/{id}/toggle:
+    patch:
+      tags:
+        - Peliculas
+      security:
+        - bearerAuth: []
+      summary: Alternar visibilidad de una pelicula
+      description: Invierte el valor de `isActive` de la pelicula indicada.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pelicula actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CatalogoPelicula'
+        '404':
+          description: Pelicula no encontrada
+
 components:
   schemas:
     CatalogoPelicula:
@@ -127,6 +161,9 @@ components:
         poster_url:
           type: string
           example: https://image.tmdb.org/t/p/w500/inception.jpg
+        isActive:
+          type: boolean
+          example: true
         createdAt:
           type: string
           format: date-time
@@ -143,6 +180,9 @@ components:
           type: string
         poster_url:
           type: string
+        isActive:
+          type: boolean
+          default: true
 
     UpdateCatalogoPeliculaRequest:
       type: object
@@ -154,3 +194,5 @@ components:
           nullable: true
         poster_url:
           type: string
+        isActive:
+          type: boolean

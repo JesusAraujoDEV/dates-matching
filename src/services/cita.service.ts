@@ -1,4 +1,4 @@
-import { Cita } from "../generated/prisma/client";
+import { Cita, Prisma } from "../generated/prisma/client";
 
 import { CitaRepository } from "../repositories/cita.repository";
 import {
@@ -12,10 +12,13 @@ import {
 import { AppError } from "../utils/app-error";
 
 export class CitaService {
+  private static readonly EMPTY_SELECTION_MARKER = "__EMPTY_SELECTION__";
+
   constructor(private readonly citaRepository: CitaRepository) {}
 
   async findAll(): Promise<Cita[]> {
-    return this.citaRepository.findAll();
+    const citas = await this.citaRepository.findAll();
+    return citas.map((cita) => this.sanitizeCita(cita));
   }
 
   async findById(id: number): Promise<Cita> {
@@ -25,7 +28,17 @@ export class CitaService {
       throw new AppError("La cita no existe", 404);
     }
 
-    return cita;
+    return this.sanitizeCita(cita);
+  }
+
+  async delete(id: number): Promise<void> {
+    const cita = await this.citaRepository.findById(id);
+
+    if (!cita) {
+      throw new AppError("La cita no existe", 404);
+    }
+
+    await this.citaRepository.delete(id);
   }
 
   async create(payload: CreateCitaParams): Promise<CreateCitaResponse> {
@@ -56,16 +69,26 @@ export class CitaService {
         tipo_cita: payload.tipo_cita,
         estado: "esperando_pareja",
         swipes_jesus_peliculas:
-          votante === "jesus" ? payload.peliculas : [],
-        swipes_jesus_comidas: votante === "jesus" ? payload.comidas : [],
+          votante === "jesus"
+            ? this.toStoredSwipeValue(payload.peliculas)
+            : [],
+        swipes_jesus_comidas:
+          votante === "jesus"
+            ? this.toStoredSwipeValue(payload.comidas)
+            : [],
         swipes_piera_peliculas:
-          votante === "piera" ? payload.peliculas : [],
-        swipes_piera_comidas: votante === "piera" ? payload.comidas : [],
+          votante === "piera"
+            ? this.toStoredSwipeValue(payload.peliculas)
+            : [],
+        swipes_piera_comidas:
+          votante === "piera"
+            ? this.toStoredSwipeValue(payload.comidas)
+            : [],
         peliculas_match: [],
         comidas_match: [],
       });
 
-      return { cita, created: true };
+      return { cita: this.sanitizeCita(cita), created: true };
     }
 
     if (existingCita.estado === "finalizada") {
@@ -98,28 +121,30 @@ export class CitaService {
     const resultadoPelicula =
       peliculasMatch.length === 1 ? peliculasMatch[0] : null;
     const resultadoComida = comidasMatch.length === 1 ? comidasMatch[0] : null;
+    const requiereVotoPelicula = peliculasMatch.length > 1;
+    const requiereVotoComida = comidasMatch.length > 1;
     const estadoFinal =
-      peliculasMatch.length === 1 && comidasMatch.length === 1
+      !requiereVotoPelicula && !requiereVotoComida
         ? "finalizada"
         : "muerte_subita";
 
     const cita = await this.citaRepository.update(existingCita.id, {
       swipes_jesus_peliculas:
         votante === "jesus"
-          ? payload.peliculas
-          : this.normalizeStringArray(existingCita.swipes_jesus_peliculas),
+          ? this.toStoredSwipeValue(payload.peliculas)
+          : this.toStoredSwipeValueFromPersisted(existingCita.swipes_jesus_peliculas),
       swipes_jesus_comidas:
         votante === "jesus"
-          ? payload.comidas
-          : this.normalizeStringArray(existingCita.swipes_jesus_comidas),
+          ? this.toStoredSwipeValue(payload.comidas)
+          : this.toStoredSwipeValueFromPersisted(existingCita.swipes_jesus_comidas),
       swipes_piera_peliculas:
         votante === "piera"
-          ? payload.peliculas
-          : this.normalizeStringArray(existingCita.swipes_piera_peliculas),
+          ? this.toStoredSwipeValue(payload.peliculas)
+          : this.toStoredSwipeValueFromPersisted(existingCita.swipes_piera_peliculas),
       swipes_piera_comidas:
         votante === "piera"
-          ? payload.comidas
-          : this.normalizeStringArray(existingCita.swipes_piera_comidas),
+          ? this.toStoredSwipeValue(payload.comidas)
+          : this.toStoredSwipeValueFromPersisted(existingCita.swipes_piera_comidas),
       peliculas_match: peliculasMatch,
       comidas_match: comidasMatch,
       resultado_pelicula: resultadoPelicula,
@@ -127,7 +152,7 @@ export class CitaService {
       estado: estadoFinal,
     });
 
-    return { cita, created: false };
+    return { cita: this.sanitizeCita(cita), created: false };
   }
 
   async updateResultadoManual(payload: UpdateCitaParams): Promise<Cita> {
@@ -147,10 +172,12 @@ export class CitaService {
       );
     }
 
-    return this.citaRepository.update(payload.id, {
+    const citaActualizada = await this.citaRepository.update(payload.id, {
       resultado_pelicula: payload.resultado_pelicula,
       resultado_comida: payload.resultado_comida,
     });
+
+    return this.sanitizeCita(citaActualizada);
   }
 
   async emitirVotoFinal(
@@ -173,10 +200,34 @@ export class CitaService {
     }
 
     const votante = this.resolveVotante(user.nombre);
+    const peliculaOptions = this.normalizeStringArray(cita.peliculas_match);
+    const comidaOptions = this.normalizeStringArray(cita.comidas_match);
+    const requiereVotoPelicula = peliculaOptions.length > 1;
+    const requiereVotoComida = comidaOptions.length > 1;
+
+    const pelicula = this.normalizeVoteValue(payload.pelicula);
+    const comida = this.normalizeVoteValue(payload.comida);
+
+    if (requiereVotoPelicula && !pelicula) {
+      throw new AppError(
+        "Debes enviar pelicula cuando la cita requiere desempate de peliculas",
+        400,
+      );
+    }
+
+    if (requiereVotoComida && !comida) {
+      throw new AppError(
+        "Debes enviar comida cuando la cita requiere desempate de comidas",
+        400,
+      );
+    }
 
     const citaConVoto = await this.citaRepository.updateVote(
       payload.citaId,
-      this.getVoteUpdateByUser(votante, payload.pelicula, payload.comida),
+      this.getVoteUpdateByUser(votante, {
+        pelicula: requiereVotoPelicula ? pelicula : undefined,
+        comida: requiereVotoComida ? comida : undefined,
+      }),
     );
 
     const ambosVotaron = this.ambosVotaron(citaConVoto);
@@ -184,16 +235,18 @@ export class CitaService {
     if (!ambosVotaron) {
       return {
         message: "Voto registrado. Esperando el voto de la otra persona.",
-        cita: citaConVoto,
+        cita: this.sanitizeCita(citaConVoto),
       };
     }
 
-    const resultadoPelicula = this.resolveResultado(
+    const resultadoPelicula = this.resolveResultadoFinal(
+      this.normalizeStringArray(citaConVoto.peliculas_match),
       citaConVoto.voto_jesus_pelicula,
       citaConVoto.voto_piera_pelicula,
     );
 
-    const resultadoComida = this.resolveResultado(
+    const resultadoComida = this.resolveResultadoFinal(
+      this.normalizeStringArray(citaConVoto.comidas_match),
       citaConVoto.voto_jesus_comida,
       citaConVoto.voto_piera_comida,
     );
@@ -205,7 +258,7 @@ export class CitaService {
 
     return {
       message: "Ambos votaron. Resultado final calculado con Muerte Subita.",
-      cita: citaFinalizada,
+      cita: this.sanitizeCita(citaFinalizada),
     };
   }
 
@@ -228,32 +281,54 @@ export class CitaService {
 
   private getVoteUpdateByUser(
     votante: UsuarioVotante,
-    pelicula: string,
-    comida: string,
+    votes: { pelicula?: string; comida?: string },
   ) {
     if (votante === "jesus") {
       return {
-        voto_jesus_pelicula: pelicula,
-        voto_jesus_comida: comida,
+        ...(votes.pelicula !== undefined
+          ? { voto_jesus_pelicula: votes.pelicula }
+          : {}),
+        ...(votes.comida !== undefined
+          ? { voto_jesus_comida: votes.comida }
+          : {}),
       };
     }
 
     return {
-      voto_piera_pelicula: pelicula,
-      voto_piera_comida: comida,
+      ...(votes.pelicula !== undefined
+        ? { voto_piera_pelicula: votes.pelicula }
+        : {}),
+      ...(votes.comida !== undefined
+        ? { voto_piera_comida: votes.comida }
+        : {}),
     };
   }
 
   private ambosVotaron(cita: Cita): boolean {
+    const requiereVotoPelicula = this.normalizeStringArray(cita.peliculas_match).length > 1;
+    const requiereVotoComida = this.normalizeStringArray(cita.comidas_match).length > 1;
+
     return Boolean(
-      cita.voto_jesus_pelicula &&
-        cita.voto_jesus_comida &&
-        cita.voto_piera_pelicula &&
-        cita.voto_piera_comida,
+      (!requiereVotoPelicula ||
+        (cita.voto_jesus_pelicula && cita.voto_piera_pelicula)) &&
+        (!requiereVotoComida ||
+          (cita.voto_jesus_comida && cita.voto_piera_comida)),
     );
   }
 
-  private resolveResultado(opcionA: string | null, opcionB: string | null): string {
+  private resolveResultadoFinal(
+    opciones: string[],
+    opcionA: string | null,
+    opcionB: string | null,
+  ): string | null {
+    if (opciones.length === 0) {
+      return null;
+    }
+
+    if (opciones.length === 1) {
+      return opciones[0];
+    }
+
     if (!opcionA || !opcionB) {
       throw new AppError("No hay suficientes votos para resolver el resultado", 400);
     }
@@ -299,10 +374,18 @@ export class CitaService {
   }
 
   private userAlreadySubmittedSwipes(cita: Cita, votante: UsuarioVotante): boolean {
-    const peliculas = this.getOwnPeliculasByUser(cita, votante);
-    const comidas = this.getOwnComidasByUser(cita, votante);
-
-    return peliculas.length > 0 || comidas.length > 0;
+    return (
+      this.hasSubmittedSwipe(
+        votante === "jesus"
+          ? cita.swipes_jesus_peliculas
+          : cita.swipes_piera_peliculas,
+      ) ||
+      this.hasSubmittedSwipe(
+        votante === "jesus"
+          ? cita.swipes_jesus_comidas
+          : cita.swipes_piera_comidas,
+      )
+    );
   }
 
   private getStoredPeliculasByUser(cita: Cita, votante: UsuarioVotante): unknown {
@@ -317,20 +400,37 @@ export class CitaService {
       : cita.swipes_jesus_comidas;
   }
 
-  private getOwnPeliculasByUser(cita: Cita, votante: UsuarioVotante): string[] {
-    return this.normalizeStringArray(
-      votante === "jesus"
-        ? cita.swipes_jesus_peliculas
-        : cita.swipes_piera_peliculas,
-    );
+  private hasSubmittedSwipe(value: unknown): boolean {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    return value !== null && value !== undefined;
   }
 
-  private getOwnComidasByUser(cita: Cita, votante: UsuarioVotante): string[] {
-    return this.normalizeStringArray(
-      votante === "jesus"
-        ? cita.swipes_jesus_comidas
-        : cita.swipes_piera_comidas,
-    );
+  private toStoredSwipeValue(values: string[]): Prisma.InputJsonValue {
+    const normalized = this.normalizeStringArray(values);
+
+    return normalized.length === 0
+      ? [CitaService.EMPTY_SELECTION_MARKER]
+      : normalized;
+  }
+
+  private toStoredSwipeValueFromPersisted(value: unknown): Prisma.InputJsonValue {
+    if (Array.isArray(value)) {
+      return value as Prisma.InputJsonValue;
+    }
+
+    return this.toStoredSwipeValue(this.normalizeStringArray(value));
+  }
+
+  private normalizeVoteValue(value: string | null | undefined): string | undefined {
+    if (typeof value !== "string") {
+      return undefined;
+    }
+
+    const normalized = value.trim();
+    return normalized.length > 0 ? normalized : undefined;
   }
 
   private normalizeStringArray(value: unknown): string[] {
@@ -339,7 +439,22 @@ export class CitaService {
     }
 
     return value.filter(
-      (item): item is string => typeof item === "string" && item.trim().length > 0,
+      (item): item is string =>
+        typeof item === "string" &&
+        item.trim().length > 0 &&
+        item !== CitaService.EMPTY_SELECTION_MARKER,
     );
+  }
+
+  private sanitizeCita(cita: Cita): Cita {
+    return {
+      ...cita,
+      swipes_jesus_peliculas: this.normalizeStringArray(cita.swipes_jesus_peliculas),
+      swipes_jesus_comidas: this.normalizeStringArray(cita.swipes_jesus_comidas),
+      swipes_piera_peliculas: this.normalizeStringArray(cita.swipes_piera_peliculas),
+      swipes_piera_comidas: this.normalizeStringArray(cita.swipes_piera_comidas),
+      peliculas_match: this.normalizeStringArray(cita.peliculas_match),
+      comidas_match: this.normalizeStringArray(cita.comidas_match),
+    };
   }
 }

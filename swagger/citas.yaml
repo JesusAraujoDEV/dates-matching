@@ -27,6 +27,10 @@ paths:
       security:
         - bearerAuth: []
       summary: Iniciar una nueva cita
+      description: |
+        Registra los swipes de un usuario autenticado para una fecha.
+        Los arrays `peliculas` y `comidas` pueden venir vacios (`[]`) para indicar
+        que ese tipo de plan no aplica en la cita.
       requestBody:
         required: true
         content:
@@ -38,10 +42,18 @@ paths:
                 value:
                   fecha: 2026-03-15T21:00:00.000Z
                   tipo_cita: noche_de_pelicula
-                  peliculas_match:
+                  peliculas:
                     - Inception
                     - Interstellar
-                  comidas_match:
+                  comidas:
+                    - Sushi
+                    - Tequenos
+              citaSinPeliculas:
+                value:
+                  fecha: 2026-03-15T21:00:00.000Z
+                  tipo_cita: cena_en_casa
+                  peliculas: []
+                  comidas:
                     - Sushi
                     - Tequenos
       responses:
@@ -128,6 +140,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      summary: Eliminar cita por id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Cita eliminada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Cita eliminada correctamente
+        '404':
+          description: Cita no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
   /api/citas/{id}/voto:
     post:
@@ -141,6 +183,9 @@ paths:
         Si ambos usuarios ya votaron, aplica la logica Muerte Subita:
         - Telepatia: si coinciden votos, se usa ese resultado.
         - Ruleta: si no coinciden, se elige aleatoriamente entre ambas opciones.
+        Los campos `pelicula` y `comida` solo son necesarios cuando esa categoria
+        tiene mas de una opcion en match. Si el match de una categoria es `[]`,
+        se ignora en Muerte Subita.
       parameters:
         - in: path
           name: id
@@ -194,8 +239,8 @@ components:
       required:
         - fecha
         - tipo_cita
-        - peliculas_match
-        - comidas_match
+        - peliculas
+        - comidas
       properties:
         fecha:
           type: string
@@ -203,13 +248,15 @@ components:
         tipo_cita:
           type: string
           example: noche_de_pelicula
-        peliculas_match:
+        peliculas:
           type: array
+          minItems: 0
           items:
             type: string
           example: [Inception, Interstellar]
-        comidas_match:
+        comidas:
           type: array
+          minItems: 0
           items:
             type: string
           example: [Sushi, Tequenos]
@@ -230,17 +277,19 @@ components:
       type: object
       required:
         - usuarioId
-        - pelicula
-        - comida
       properties:
         usuarioId:
           type: integer
           example: 1
         pelicula:
           type: string
+          nullable: true
+          description: Requerido solo si `peliculas_match` tiene mas de una opcion.
           example: Inception
         comida:
           type: string
+          nullable: true
+          description: Requerido solo si `comidas_match` tiene mas de una opcion.
           example: Sushi
 
     EmitirVotoFinalResponse:
@@ -267,7 +316,7 @@ components:
           example: cine_y_comida
         estado:
           type: string
-          enum: [creada, swiping, esperando_votos, finalizada]
+          enum: [esperando_pareja, muerte_subita, finalizada]
           example: finalizada
         peliculas_match:
           type: array

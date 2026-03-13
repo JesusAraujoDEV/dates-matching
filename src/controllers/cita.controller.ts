@@ -19,14 +19,11 @@ export class CitaController {
   ): Promise<Response | void> => {
     try {
       const citaId = parseNumericId(req.params.id, "id");
-      ensureRequestBody(req.body, ["usuarioId", "pelicula", "comida"]);
+      ensureRequestBody(req.body, ["usuarioId"]);
       const { usuarioId, pelicula, comida } = req.body;
 
-      if (!Number.isInteger(usuarioId) || !pelicula || !comida) {
-        throw new AppError(
-          "Debes enviar usuarioId, pelicula y comida en el body",
-          400,
-        );
+      if (!Number.isInteger(usuarioId)) {
+        throw new AppError("Debes enviar un usuarioId numerico en el body", 400);
       }
 
       const result = await this.citaService.emitirVotoFinal({
@@ -83,6 +80,10 @@ export class CitaController {
 
       const { fecha, tipo_cita, peliculas, comidas } = req.body;
 
+      if (!Array.isArray(peliculas) || !Array.isArray(comidas)) {
+        throw new AppError("peliculas y comidas deben ser arrays", 400);
+      }
+
       const cita = await this.citaService.create({
         fecha,
         tipo_cita,
@@ -114,6 +115,20 @@ export class CitaController {
       });
 
       return res.status(200).json(cita);
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  delete = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> => {
+    try {
+      const id = parseNumericId(req.params.id, "id");
+      await this.citaService.delete(id);
+      return res.status(200).json({ message: "Cita eliminada correctamente" });
     } catch (error) {
       return next(error);
     }

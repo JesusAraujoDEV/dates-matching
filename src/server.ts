@@ -17,6 +17,7 @@ import { userRouter } from "./routes/user.routes";
 // 2) Inicializacion de la app
 const app: Application = express();
 const PORT = Number(process.env.PORT) || 3000;
+const isProduction = process.env.NODE_ENV === "production";
 const whitelistUrls = (process.env.WHITELIST_URLS || "")
   .split(",")
   .map((url) => url.trim())
@@ -27,6 +28,10 @@ const normalizedWhitelistUrls = whitelistUrls.map((url) =>
 
 const corsOptions: CorsOptions = {
   origin: (origin, callback) => {
+    if (!isProduction) {
+      return callback(null, true);
+    }
+
     if (!origin) {
       return callback(null, true);
     }
@@ -39,6 +44,8 @@ const corsOptions: CorsOptions = {
 
     return callback(new Error("Not allowed by CORS"));
   },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // 3) Middlewares de configuracion (CORS)
