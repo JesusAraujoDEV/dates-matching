@@ -6,8 +6,9 @@ import {
 import { prisma } from "../config/prisma";
 
 export class CatalogoPeliculaRepository {
-  async findAll(): Promise<CatalogoPelicula[]> {
+  async findAll(active?: boolean): Promise<CatalogoPelicula[]> {
     return prisma.catalogoPelicula.findMany({
+      where: active === undefined ? undefined : { isActive: active },
       orderBy: { createdAt: "desc" },
     });
   }
@@ -32,5 +33,12 @@ export class CatalogoPeliculaRepository {
 
   async delete(id: number): Promise<CatalogoPelicula> {
     return prisma.catalogoPelicula.delete({ where: { id } });
+  }
+
+  async toggleActive(id: number, isActive: boolean): Promise<CatalogoPelicula> {
+    return prisma.catalogoPelicula.update({
+      where: { id },
+      data: { isActive },
+    });
   }
 }

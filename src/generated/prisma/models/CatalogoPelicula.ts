@@ -39,6 +39,7 @@ export type CatalogoPeliculaMinAggregateOutputType = {
   titulo: string | null
   tmdb_id: string | null
   poster_url: string | null
+  isActive: boolean | null
   createdAt: Date | null
 }
 
@@ -47,6 +48,7 @@ export type CatalogoPeliculaMaxAggregateOutputType = {
   titulo: string | null
   tmdb_id: string | null
   poster_url: string | null
+  isActive: boolean | null
   createdAt: Date | null
 }
 
@@ -55,6 +57,7 @@ export type CatalogoPeliculaCountAggregateOutputType = {
   titulo: number
   tmdb_id: number
   poster_url: number
+  isActive: number
   createdAt: number
   _all: number
 }
@@ -73,6 +76,7 @@ export type CatalogoPeliculaMinAggregateInputType = {
   titulo?: true
   tmdb_id?: true
   poster_url?: true
+  isActive?: true
   createdAt?: true
 }
 
@@ -81,6 +85,7 @@ export type CatalogoPeliculaMaxAggregateInputType = {
   titulo?: true
   tmdb_id?: true
   poster_url?: true
+  isActive?: true
   createdAt?: true
 }
 
@@ -89,6 +94,7 @@ export type CatalogoPeliculaCountAggregateInputType = {
   titulo?: true
   tmdb_id?: true
   poster_url?: true
+  isActive?: true
   createdAt?: true
   _all?: true
 }
@@ -184,6 +190,7 @@ export type CatalogoPeliculaGroupByOutputType = {
   titulo: string
   tmdb_id: string | null
   poster_url: string
+  isActive: boolean
   createdAt: Date
   _count: CatalogoPeliculaCountAggregateOutputType | null
   _avg: CatalogoPeliculaAvgAggregateOutputType | null
@@ -215,6 +222,7 @@ export type CatalogoPeliculaWhereInput = {
   titulo?: Prisma.StringFilter<"CatalogoPelicula"> | string
   tmdb_id?: Prisma.StringNullableFilter<"CatalogoPelicula"> | string | null
   poster_url?: Prisma.StringFilter<"CatalogoPelicula"> | string
+  isActive?: Prisma.BoolFilter<"CatalogoPelicula"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CatalogoPelicula"> | Date | string
 }
 
@@ -223,6 +231,7 @@ export type CatalogoPeliculaOrderByWithRelationInput = {
   titulo?: Prisma.SortOrder
   tmdb_id?: Prisma.SortOrderInput | Prisma.SortOrder
   poster_url?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -234,6 +243,7 @@ export type CatalogoPeliculaWhereUniqueInput = Prisma.AtLeast<{
   titulo?: Prisma.StringFilter<"CatalogoPelicula"> | string
   tmdb_id?: Prisma.StringNullableFilter<"CatalogoPelicula"> | string | null
   poster_url?: Prisma.StringFilter<"CatalogoPelicula"> | string
+  isActive?: Prisma.BoolFilter<"CatalogoPelicula"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CatalogoPelicula"> | Date | string
 }, "id">
 
@@ -242,6 +252,7 @@ export type CatalogoPeliculaOrderByWithAggregationInput = {
   titulo?: Prisma.SortOrder
   tmdb_id?: Prisma.SortOrderInput | Prisma.SortOrder
   poster_url?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CatalogoPeliculaCountOrderByAggregateInput
   _avg?: Prisma.CatalogoPeliculaAvgOrderByAggregateInput
@@ -258,6 +269,7 @@ export type CatalogoPeliculaScalarWhereWithAggregatesInput = {
   titulo?: Prisma.StringWithAggregatesFilter<"CatalogoPelicula"> | string
   tmdb_id?: Prisma.StringNullableWithAggregatesFilter<"CatalogoPelicula"> | string | null
   poster_url?: Prisma.StringWithAggregatesFilter<"CatalogoPelicula"> | string
+  isActive?: Prisma.BoolWithAggregatesFilter<"CatalogoPelicula"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CatalogoPelicula"> | Date | string
 }
 
@@ -265,6 +277,7 @@ export type CatalogoPeliculaCreateInput = {
   titulo: string
   tmdb_id?: string | null
   poster_url: string
+  isActive?: boolean
   createdAt?: Date | string
 }
 
@@ -273,6 +286,7 @@ export type CatalogoPeliculaUncheckedCreateInput = {
   titulo: string
   tmdb_id?: string | null
   poster_url: string
+  isActive?: boolean
   createdAt?: Date | string
 }
 
@@ -280,6 +294,7 @@ export type CatalogoPeliculaUpdateInput = {
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
   tmdb_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poster_url?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -288,6 +303,7 @@ export type CatalogoPeliculaUncheckedUpdateInput = {
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
   tmdb_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poster_url?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -296,6 +312,7 @@ export type CatalogoPeliculaCreateManyInput = {
   titulo: string
   tmdb_id?: string | null
   poster_url: string
+  isActive?: boolean
   createdAt?: Date | string
 }
 
@@ -303,6 +320,7 @@ export type CatalogoPeliculaUpdateManyMutationInput = {
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
   tmdb_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poster_url?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -311,6 +329,7 @@ export type CatalogoPeliculaUncheckedUpdateManyInput = {
   titulo?: Prisma.StringFieldUpdateOperationsInput | string
   tmdb_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   poster_url?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -319,6 +338,7 @@ export type CatalogoPeliculaCountOrderByAggregateInput = {
   titulo?: Prisma.SortOrder
   tmdb_id?: Prisma.SortOrder
   poster_url?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -331,6 +351,7 @@ export type CatalogoPeliculaMaxOrderByAggregateInput = {
   titulo?: Prisma.SortOrder
   tmdb_id?: Prisma.SortOrder
   poster_url?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -339,11 +360,16 @@ export type CatalogoPeliculaMinOrderByAggregateInput = {
   titulo?: Prisma.SortOrder
   tmdb_id?: Prisma.SortOrder
   poster_url?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type CatalogoPeliculaSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 
@@ -353,6 +379,7 @@ export type CatalogoPeliculaSelect<ExtArgs extends runtime.Types.Extensions.Inte
   titulo?: boolean
   tmdb_id?: boolean
   poster_url?: boolean
+  isActive?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["catalogoPelicula"]>
 
@@ -361,6 +388,7 @@ export type CatalogoPeliculaSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   titulo?: boolean
   tmdb_id?: boolean
   poster_url?: boolean
+  isActive?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["catalogoPelicula"]>
 
@@ -369,6 +397,7 @@ export type CatalogoPeliculaSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   titulo?: boolean
   tmdb_id?: boolean
   poster_url?: boolean
+  isActive?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["catalogoPelicula"]>
 
@@ -377,10 +406,11 @@ export type CatalogoPeliculaSelectScalar = {
   titulo?: boolean
   tmdb_id?: boolean
   poster_url?: boolean
+  isActive?: boolean
   createdAt?: boolean
 }
 
-export type CatalogoPeliculaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "titulo" | "tmdb_id" | "poster_url" | "createdAt", ExtArgs["result"]["catalogoPelicula"]>
+export type CatalogoPeliculaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "titulo" | "tmdb_id" | "poster_url" | "isActive" | "createdAt", ExtArgs["result"]["catalogoPelicula"]>
 
 export type $CatalogoPeliculaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CatalogoPelicula"
@@ -390,6 +420,7 @@ export type $CatalogoPeliculaPayload<ExtArgs extends runtime.Types.Extensions.In
     titulo: string
     tmdb_id: string | null
     poster_url: string
+    isActive: boolean
     createdAt: Date
   }, ExtArgs["result"]["catalogoPelicula"]>
   composites: {}
@@ -818,6 +849,7 @@ export interface CatalogoPeliculaFieldRefs {
   readonly titulo: Prisma.FieldRef<"CatalogoPelicula", 'String'>
   readonly tmdb_id: Prisma.FieldRef<"CatalogoPelicula", 'String'>
   readonly poster_url: Prisma.FieldRef<"CatalogoPelicula", 'String'>
+  readonly isActive: Prisma.FieldRef<"CatalogoPelicula", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"CatalogoPelicula", 'DateTime'>
 }
     

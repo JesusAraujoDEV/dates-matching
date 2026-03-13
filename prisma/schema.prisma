@@ -46,6 +46,7 @@ model CatalogoPelicula {
   titulo    String
   tmdb_id   String?
   poster_url String
+  isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now())
 }
 

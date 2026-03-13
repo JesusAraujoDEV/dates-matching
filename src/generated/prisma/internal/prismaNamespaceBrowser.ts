@@ -112,6 +112,7 @@ export const CatalogoPeliculaScalarFieldEnum = {
   titulo: 'titulo',
   tmdb_id: 'tmdb_id',
   poster_url: 'poster_url',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
 

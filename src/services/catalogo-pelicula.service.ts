@@ -2,6 +2,7 @@ import { CatalogoPelicula } from "../generated/prisma/client";
 import { CatalogoPeliculaRepository } from "../repositories/catalogo-pelicula.repository";
 import {
   CreateCatalogoPeliculaParams,
+  FindAllCatalogoPeliculaParams,
   UpdateCatalogoPeliculaParams,
 } from "../types/catalogo-pelicula.types";
 import { AppError } from "../utils/app-error";
@@ -11,8 +12,8 @@ export class CatalogoPeliculaService {
     private readonly catalogoPeliculaRepository: CatalogoPeliculaRepository,
   ) {}
 
-  async findAll(): Promise<CatalogoPelicula[]> {
-    return this.catalogoPeliculaRepository.findAll();
+  async findAll(params?: FindAllCatalogoPeliculaParams): Promise<CatalogoPelicula[]> {
+    return this.catalogoPeliculaRepository.findAll(params?.active);
   }
 
   async findById(id: number): Promise<CatalogoPelicula> {
@@ -39,6 +40,7 @@ export class CatalogoPeliculaService {
       titulo: payload.titulo,
       poster_url: payload.poster_url,
       tmdb_id: normalizedTmdbId,
+      isActive: payload.isActive,
     });
   }
 
@@ -52,7 +54,8 @@ export class CatalogoPeliculaService {
     if (
       payload.titulo === undefined &&
       payload.tmdb_id === undefined &&
-      payload.poster_url === undefined
+      payload.poster_url === undefined &&
+      payload.isActive === undefined
     ) {
       throw new AppError("Debes enviar al menos un campo para actualizar", 400);
     }
@@ -66,7 +69,18 @@ export class CatalogoPeliculaService {
             ? null
             : String(payload.tmdb_id),
       poster_url: payload.poster_url,
+      isActive: payload.isActive,
     });
+  }
+
+  async toggleActive(id: number): Promise<CatalogoPelicula> {
+    const pelicula = await this.catalogoPeliculaRepository.findById(id);
+
+    if (!pelicula) {
+      throw new AppError("La pelicula no existe en el catalogo", 404);
+    }
+
+    return this.catalogoPeliculaRepository.toggleActive(id, !pelicula.isActive);
   }
 
   async delete(id: number): Promise<CatalogoPelicula> {

@@ -781,6 +781,7 @@ export const CatalogoPeliculaScalarFieldEnum = {
   titulo: 'titulo',
   tmdb_id: 'tmdb_id',
   poster_url: 'poster_url',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 } as const
 
@@ -911,6 +912,13 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

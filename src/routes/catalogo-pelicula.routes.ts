@@ -18,6 +18,7 @@ catalogoPeliculaRouter.get("/", catalogoPeliculaController.findAll);
 catalogoPeliculaRouter.get("/:id", catalogoPeliculaController.findById);
 catalogoPeliculaRouter.post("/", catalogoPeliculaController.create);
 catalogoPeliculaRouter.put("/:id", catalogoPeliculaController.update);
+catalogoPeliculaRouter.patch("/:id/toggle", catalogoPeliculaController.toggleActive);
 catalogoPeliculaRouter.delete("/:id", catalogoPeliculaController.delete);
 
 export { catalogoPeliculaRouter };
