@@ -19,4 +19,17 @@ export class UserRepository {
       orderBy: { id: "asc" },
     });
   }
+
+  async findByIdSafe(
+    id: number,
+  ): Promise<Pick<User, "id" | "nombre" | "telefono"> | null> {
+    return prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        nombre: true,
+        telefono: true,
+      },
+    });
+  }
 }

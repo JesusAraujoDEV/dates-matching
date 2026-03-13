@@ -8,6 +8,16 @@ import { AppError } from "../utils/app-error";
 export class AuthService {
   constructor(private readonly userRepository: UserRepository) {}
 
+  async me(userId: number) {
+    const user = await this.userRepository.findByIdSafe(userId);
+
+    if (!user) {
+      throw new AppError("Usuario no encontrado", 404);
+    }
+
+    return user;
+  }
+
   async login(payload: LoginParams): Promise<LoginResponse> {
     if (!payload.nombre || !payload.password) {
       throw new AppError("nombre y password son obligatorios", 400);
